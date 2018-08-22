@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="all"
+        android:textSize="4sp"
         android:title="All" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="africa"
+        android:textSize="4sp"
         android:title="Africa" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="antarctica"
+        android:textSize="4sp"
         android:title="Antarctica" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="asia"
+        android:textSize="4sp"
         android:title="Asia" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="europe"
+        android:textSize="4sp"
         android:title="Europe" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="north
-
-
-
-
-        _america"
+        android:key="north_america"
+        android:textSize="4sp"
         android:title="North America" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="central_america"
+        android:textSize="4sp"
         android:title="Central America and the Antilles" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="south_america"
+        android:textSize="4sp"
         android:title="South America" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="australia"
+        android:textSize="4sp"
         android:title="Australia" />
 </PreferenceScreen>

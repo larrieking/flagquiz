@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        PreferenceManager.setDefaultValues(this,R.xml.preference, false);
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             Button button = (Button)findViewById(id);
             buttons.add(button);
         }
-        SharedPreferences sharedPreferences = this.getSharedPreferences("coutries", MODE_PRIVATE);
+       // SharedPreferences sharedPreferences = this.getSharedPreferences("coutries", MODE_PRIVATE);
         progressBar.setVisibility(View.VISIBLE);
         try {
             example = new Gson().fromJson(new DownloadTask().execute("https://restcountries.eu/rest/v2/all").get(),new TypeToken<List<Example>>(){}.getType());
@@ -85,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
         prepareView();
         progressBar.setVisibility(View.GONE);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean all = sharedPreferences.getBoolean(SettingsActivity.ALL, false);
+        Toast.makeText(this, all.toString(), Toast.LENGTH_SHORT).show();
     }
 
 

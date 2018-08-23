@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     Example currentQuestion;
     private ImageView imageView;
     private ProgressBar progressBar;
+    private Map<String, ?>map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean all = sharedPreferences.getBoolean(SettingsActivity.ALL, false);
-        Toast.makeText(this, all.toString(), Toast.LENGTH_SHORT).show();
+        map = sharedPreferences.getAll();
+        //Boolean all = sharedPreferences.getBoolean(SettingsActivity.ALL, false);
+        Toast.makeText(this, map.get("all").toString(), Toast.LENGTH_SHORT).show();
     }
 
 

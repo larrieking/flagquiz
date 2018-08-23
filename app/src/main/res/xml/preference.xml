@@ -14,7 +14,7 @@
         android:defaultValue="false"
         android:key="antarctica"
         android:textSize="4sp"
-        android:title="Antarctica" />
+        android:title="Americas" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="asia"
@@ -27,22 +27,8 @@
         android:title="Europe" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="north_america"
+        android:key="oceania"
         android:textSize="4sp"
-        android:title="North America" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="central_america"
-        android:textSize="4sp"
-        android:title="Central America and the Antilles" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="south_america"
-        android:textSize="4sp"
-        android:title="South America" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="australia"
-        android:textSize="4sp"
-        android:title="Australia" />
+        android:title="Oceania" />
+
 </PreferenceScreen>

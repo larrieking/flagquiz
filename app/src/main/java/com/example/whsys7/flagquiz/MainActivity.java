@@ -41,13 +41,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
 
     //private GenericRequestBuilder
+    private List<String>choices = new ArrayList<>();
     private int counter;
     private List<Button>buttons;
     private static  final int[]BUTTON_IDS = {R.id.button, R.id.button2, R.id.button3, R.id.button4};
@@ -58,26 +62,28 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private ProgressBar progressBar;
     private Map<String, ?>map;
+    private List<Example>question = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PreferenceManager.setDefaultValues(this,R.xml.preference, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preference, false);
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        imageView = (ImageView)findViewById(R.id.imageView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         buttons = new ArrayList<>();
-        for(int id : BUTTON_IDS){
-            Button button = (Button)findViewById(id);
+        for (int id : BUTTON_IDS) {
+            Button button = (Button) findViewById(id);
             buttons.add(button);
         }
-       // SharedPreferences sharedPreferences = this.getSharedPreferences("coutries", MODE_PRIVATE);
+        // SharedPreferences sharedPreferences = this.getSharedPreferences("coutries", MODE_PRIVATE);
         progressBar.setVisibility(View.VISIBLE);
         try {
-            example = new Gson().fromJson(new DownloadTask().execute("https://restcountries.eu/rest/v2/all").get(),new TypeToken<List<Example>>(){}.getType());
+            example = new Gson().fromJson(new DownloadTask().execute("https://restcountries.eu/rest/v2/all").get(), new TypeToken<List<Example>>() {
+            }.getType());
             Log.i("Countries", example.toString());
 
         } catch (InterruptedException e) {
@@ -86,22 +92,35 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        prepareView();
-        progressBar.setVisibility(View.GONE);
+
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         map = sharedPreferences.getAll();
         //Boolean all = sharedPreferences.getBoolean(SettingsActivity.ALL, false);
-        Toast.makeText(this, map.get("all").toString(), Toast.LENGTH_SHORT).show();
-    }
+      //  Toast.makeText(this, map.get("all").toString(), Toast.LENGTH_SHORT).show();
+        question.clear();
+        for (Map.Entry<String, ?> key: map.entrySet()) {
 
+            if (key.getValue().toString().equalsIgnoreCase("true"))
+                choices.add(key.getKey().toString());
+        }
+
+        for (String choice : choices)
+            for(Example quest : example){
+                if(quest.getRegion().equals(choice))
+                    question.add(quest);
+        }
+
+        prepareView();
+        progressBar.setVisibility(View.GONE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -148,15 +167,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void prepareView(){
-        Collections.shuffle(example);
-        options.clear();
-        currentQuestion = example.get(0);
+        if (question.isEmpty())
+            question = example;
 
-        example.remove(0);
-        Collections.shuffle(example);
+        Collections.shuffle(question);
+        options.clear();
+        currentQuestion = question.get(0);
+
+        question.remove(0);
+        Collections.shuffle(question);
         options.add(currentQuestion.getName());
         for (int i = 1; i<=3; i++ ){
-            options.add(i,example.get(i).getName());
+            options.add(i,question.get(i).getName());
         }
         Collections.shuffle(options);
         progressBar.setVisibility(View.VISIBLE);

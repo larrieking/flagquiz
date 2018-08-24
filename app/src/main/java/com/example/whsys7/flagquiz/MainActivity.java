@@ -50,17 +50,21 @@ import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    //private GenericRequestBuilder
+    //selected continents from preference settings
     private List<String>choices = new ArrayList<>();
     private int counter;
+    //options Button
     private List<Button>buttons;
     private static  final int[]BUTTON_IDS = {R.id.button, R.id.button2, R.id.button3, R.id.button4};
-
+    //countries and informations
     List<Example> example = new ArrayList<>() ;
+    //options
     List<String>options = new ArrayList<>();
+    
     Example currentQuestion;
     private ImageView imageView;
     private ProgressBar progressBar;
+    //key-value pair from preference settings
     private Map<String, ?>map;
     private List<Example>question = new ArrayList<>();
 
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imageView = (ImageView) findViewById(R.id.imageView);
-
+        //initialize buttons
         buttons = new ArrayList<>();
         for (int id : BUTTON_IDS) {
             Button button = (Button) findViewById(id);

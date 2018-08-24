@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
-    public static final  String ALL = "all";
+    public static final  String AFRICA = "africa";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

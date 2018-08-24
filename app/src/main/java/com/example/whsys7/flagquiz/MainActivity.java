@@ -41,6 +41,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private ProgressBar progressBar;
     private Map<String, ?>map;
+    private List<String>continents = new ArrayList<>();
+    private List<Example>questions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +90,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        prepareView();
+
         progressBar.setVisibility(View.GONE);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         map = sharedPreferences.getAll();
+        continents.clear();
         //Boolean all = sharedPreferences.getBoolean(SettingsActivity.ALL, false);
-        Toast.makeText(this, map.get("all").toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, map.get("africa").toString(), Toast.LENGTH_SHORT).show();
+        Iterator<? extends Map.Entry<String, ?>> choice = map.entrySet().iterator();
+        while (choice.hasNext()){
+            Map.Entry<String, ?>entry = choice.next();
+            if (entry.getValue().toString().equals("true"))
+                continents.add(entry.getKey().toString());
+
+        }
+        for (String count : continents){
+            for (int i = 0; i<example.size()-1; i++)
+                if (example.get(i).getRegion().equals(count))
+                    questions.add(example.get(i));
+        }
+        if (questions.isEmpty())
+            questions.addAll(example);
+        prepareView();
     }
 
 
@@ -148,15 +168,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void prepareView(){
-        Collections.shuffle(example);
+        Collections.shuffle(questions);
         options.clear();
-        currentQuestion = example.get(0);
+        currentQuestion = questions.get(0);
 
-        example.remove(0);
-        Collections.shuffle(example);
+        questions.remove(0);
+        Collections.shuffle(questions);
         options.add(currentQuestion.getName());
         for (int i = 1; i<=3; i++ ){
-            options.add(i,example.get(i).getName());
+            options.add(i,questions.get(i).getName());
         }
         Collections.shuffle(options);
         progressBar.setVisibility(View.VISIBLE);

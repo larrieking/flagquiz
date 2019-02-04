@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
     
     Example currentQuestion;
     private ImageView imageView;
-    private ProgressBar progressBar;
+
     //key-value pair from preference settings
     private Map<String, ?>map;
     private List<Example>question = new ArrayList<>();
+    private String data = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         PreferenceManager.setDefaultValues(this, R.xml.preference, false);
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         imageView = (ImageView) findViewById(R.id.imageView);
         //initialize buttons
         buttons = new ArrayList<>();
@@ -84,17 +86,18 @@ public class MainActivity extends AppCompatActivity {
             buttons.add(button);
         }
         // SharedPreferences sharedPreferences = this.getSharedPreferences("coutries", MODE_PRIVATE);
-        progressBar.setVisibility(View.VISIBLE);
-        try {
-            example = new Gson().fromJson(new DownloadTask().execute("https://restcountries.eu/rest/v2/all").get(), new TypeToken<List<Example>>() {
+if(data == null) {
+
+   // Intent i = getIntent();
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    data = sharedPreferences.getString("data", null);
+   // data = i.getStringExtra("data");
+}
+            example = new Gson().fromJson(data, new TypeToken<List<Example>>() {
             }.getType());
             Log.i("Countries", example.toString());
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
 
 
 
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         prepareView();
-        progressBar.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -135,39 +138,7 @@ public class MainActivity extends AppCompatActivity {
         return  super.onOptionsItemSelected(item);
     }
 
-    public class DownloadTask extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... urls) {
-            URL url = null;
-            try {
-                url = new URL(urls[0]);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            HttpURLConnection connection;
-            try {
-                connection = (HttpURLConnection)url.openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String read = null;
-                StringBuilder output = new StringBuilder();
-                while((read = reader.readLine())!=null){
-                    output.append(read);
-
-                }
-
-                return output.toString();
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "An error Occured", Toast.LENGTH_SHORT).show();
-                return  null;
-            }
-
-
-        }
-    }
 
 
     public void prepareView(){
@@ -185,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             options.add(i,question.get(i).getName());
         }
         Collections.shuffle(options);
-        progressBar.setVisibility(View.VISIBLE);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         GenericRequestBuilder<Uri,InputStream,SVG,PictureDrawable>
                 requestBuilder = Glide.with(this)
@@ -211,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             b.setText(options.get(count));
             count +=1;
         }
-        progressBar.setVisibility(View.GONE);
+
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         // Glide.with(this).load(example.get(0).getFlag()).into(imageView);
@@ -223,9 +194,19 @@ public class MainActivity extends AppCompatActivity {
         if (b.getText().equals(currentQuestion.getName()))
             Toast.makeText(this, "CORRECT!!!", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "WRONG!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "WRONG!, ANSWER IS "+currentQuestion.getName().toUpperCase(), Toast.LENGTH_SHORT).show();
+        new CountDownTimer(1000, 1) {
+            @Override
+            public void onTick(long l) {
 
-        prepareView();
+            }
+
+            @Override
+            public void onFinish() {
+                prepareView();
+            }
+        }.start();
+
 
     }
 
